@@ -23,10 +23,20 @@
                     </div>
                     <div class="mb-3">
                         {{ form.question_type.label(class="form-label fw-bold") }}
-                        {{ form.question_type(class="form-select") }}
+                        {{ form.question_type(class="form-select", id="question_type") }}
                         {% if form.question_type.errors %}
                             <div class="text-danger mt-1">
                                 {% for error in form.question_type.errors %}<small>{{ error }}</small>{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3" id="options_field" style="display: none;">
+                        {{ form.options.label(class="form-label fw-bold") }}
+                        {{ form.options(class="form-control", rows=5, placeholder="Option 1\nOption 2\nOption 3") }}
+                        <small class="text-muted">Enter one option per line. These will be shown as choices for radio buttons or checkboxes.</small>
+                        {% if form.options.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.options.errors %}<small>{{ error }}</small>{% endfor %}
                             </div>
                         {% endif %}
                     </div>
@@ -43,4 +53,25 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const questionTypeSelect = document.getElementById('question_type');
+    const optionsField = document.getElementById('options_field');
+    
+    function toggleOptionsField() {
+        const selectedType = questionTypeSelect.value;
+        if (selectedType === 'radio' || selectedType === 'checkbox') {
+            optionsField.style.display = 'block';
+        } else {
+            optionsField.style.display = 'none';
+        }
+    }
+    
+    toggleOptionsField();
+    questionTypeSelect.addEventListener('change', toggleOptionsField);
+});
+</script>
 {% endblock %}

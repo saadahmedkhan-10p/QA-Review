@@ -47,6 +47,29 @@
                         {% elif question.question_type == 'date' %}
                         <input type="date" name="question_{{ question.id }}" class="form-control" {% if question.required %}required{% endif %}>
                         
+                        {% elif question.question_type == 'radio' %}
+                        {% for option in question.get_options_list() %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="question_{{ question.id }}" id="q{{ question.id }}_{{ loop.index }}" value="{{ option }}" {% if question.required %}required{% endif %}>
+                            <label class="form-check-label" for="q{{ question.id }}_{{ loop.index }}">
+                                {{ option }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                        
+                        {% elif question.question_type == 'checkbox' %}
+                        {% for option in question.get_options_list() %}
+                        <div class="form-check">
+                            <input class="form-check-input checkbox-group-{{ question.id }}" type="checkbox" name="question_{{ question.id }}" id="q{{ question.id }}_{{ loop.index }}" value="{{ option }}">
+                            <label class="form-check-label" for="q{{ question.id }}_{{ loop.index }}">
+                                {{ option }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                        {% if question.required %}
+                        <input type="hidden" class="checkbox-required" data-group="checkbox-group-{{ question.id }}" data-question-id="{{ question.id }}">
+                        {% endif %}
+                        
                         {% endif %}
                     </div>
                     {% endfor %}
@@ -70,4 +93,32 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    
+    form.addEventListener('submit', function(e) {
+        const requiredCheckboxes = document.querySelectorAll('.checkbox-required');
+        let isValid = true;
+        
+        requiredCheckboxes.forEach(function(hiddenInput) {
+            const groupClass = hiddenInput.getAttribute('data-group');
+            const questionId = hiddenInput.getAttribute('data-question-id');
+            const checkboxes = document.querySelectorAll('.' + groupClass + ':checked');
+            
+            if (checkboxes.length === 0) {
+                isValid = false;
+                alert('Please select at least one option for question ' + questionId);
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
 {% endblock %}

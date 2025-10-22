@@ -325,7 +325,12 @@ def submit_review(project_id):
         db.session.flush()
         
         for question in questions:
-            answer_text = request.form.get(f'question_{question.id}')
+            if question.question_type == 'checkbox':
+                answer_values = request.form.getlist(f'question_{question.id}')
+                answer_text = ', '.join(answer_values) if answer_values else ''
+            else:
+                answer_text = request.form.get(f'question_{question.id}')
+            
             if answer_text or not question.required:
                 answer = Answer(
                     submission_id=submission.id,
