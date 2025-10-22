@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.text.label(class="form-label fw-bold") }}
+                        {{ form.text(class="form-control", rows=3) }}
+                        {% if form.text.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.text.errors %}<small>{{ error }}</small>{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.question_type.label(class="form-label fw-bold") }}
+                        {{ form.question_type(class="form-select") }}
+                        {% if form.question_type.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.question_type.errors %}<small>{{ error }}</small>{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3 form-check">
+                        {{ form.required(class="form-check-input") }}
+                        {{ form.required.label(class="form-check-label") }}
+                    </div>
+                    <div class="d-flex gap-2">
+                        {{ form.submit(class="btn btn-primary") }}
+                        <a href="{{ url_for('manage_questions') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

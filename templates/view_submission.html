@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}View Submission{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-eye"></i> Submission Details</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <strong>Submission ID:</strong><br>
+                        <span class="badge bg-secondary">#{{ submission.id }}</span>
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Project:</strong><br>
+                        {{ submission.project.name }}
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Submitted by:</strong><br>
+                        {{ submission.user.name }}
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Month:</strong><br>
+                        <span class="badge bg-info">{{ submission.month }}</span>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>Submitted on:</strong> {{ submission.created_at.strftime('%Y-%m-%d %H:%M:%S') }}
+                </div>
+                
+                <hr>
+                
+                <h5 class="mb-4">Responses:</h5>
+                
+                {% for answer in submission.answers %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            Question {{ loop.index }}:
+                        </h6>
+                        <p class="fw-bold">{{ answer.question.text }}</p>
+                        <div class="alert alert-light mb-0">
+                            {{ answer.answer_text or '(No answer provided)' }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <hr>
+                
+                <div class="d-flex gap-2">
+                    {% if current_user.role == 'admin' %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Dashboard
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Dashboard
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

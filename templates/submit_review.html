@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Submit QA Review - {{ project.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-clipboard-check"></i> Submit QA Review: {{ project.name }}</h4>
+            </div>
+            <div class="card-body">
+                {% if project.description %}
+                <div class="alert alert-info">
+                    <strong>Project Description:</strong> {{ project.description }}
+                </div>
+                {% endif %}
+                
+                {% if questions %}
+                <form method="POST">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Review Month</label>
+                        <input type="month" name="month" class="form-control" value="{{ current_month }}" required>
+                    </div>
+                    
+                    <hr>
+                    
+                    {% for question in questions %}
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            {{ loop.index }}. {{ question.text }}
+                            {% if question.required %}
+                            <span class="text-danger">*</span>
+                            {% endif %}
+                        </label>
+                        
+                        {% if question.question_type == 'text' %}
+                        <input type="text" name="question_{{ question.id }}" class="form-control" {% if question.required %}required{% endif %}>
+                        
+                        {% elif question.question_type == 'textarea' %}
+                        <textarea name="question_{{ question.id }}" class="form-control" rows="4" {% if question.required %}required{% endif %}></textarea>
+                        
+                        {% elif question.question_type == 'number' %}
+                        <input type="number" name="question_{{ question.id }}" class="form-control" {% if question.required %}required{% endif %}>
+                        
+                        {% elif question.question_type == 'date' %}
+                        <input type="date" name="question_{{ question.id }}" class="form-control" {% if question.required %}required{% endif %}>
+                        
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    
+                    <hr>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-send"></i> Submit Review
+                        </button>
+                        <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary btn-lg">Cancel</a>
+                    </div>
+                </form>
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i> No questions have been configured yet. Please contact the administrator.
+                </div>
+                <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
