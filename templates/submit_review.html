@@ -18,6 +18,7 @@
                 
                 {% if questions %}
                 <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     <div class="mb-4">
                         <label class="form-label fw-bold">Review Month</label>
                         <input type="month" name="month" class="form-control" value="{{ current_month }}" required>

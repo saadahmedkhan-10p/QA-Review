@@ -1,10 +1,12 @@
 import os
+from urllib.parse import urlparse
 from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flask_wtf import FlaskForm
+from flask_wtf.csrf import CSRFProtect
 from wtforms import StringField, PasswordField, BooleanField, TextAreaField, SelectField, SubmitField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 
@@ -14,6 +16,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+csrf = CSRFProtect(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
@@ -136,7 +139,9 @@ def login():
         if user and check_password_hash(user.password_hash, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('index'))
+            if not next_page or urlparse(next_page).netloc != '':
+                next_page = url_for('index')
+            return redirect(next_page)
         else:
             flash('Invalid email or password', 'danger')
     return render_template('login.html', form=form)
@@ -337,7 +342,15 @@ def view_submission(id):
     return render_template('view_submission.html', submission=submission)
 
 @app.route('/init-db')
+@login_required
+@role_required('admin')
 def init_db():
+    db.create_all()
+    flash('Database tables created successfully!', 'success')
+    return redirect(url_for('admin_dashboard'))
+
+@app.cli.command('init-db-cli')
+def init_db_cli():
     db.create_all()
     
     admin = User.query.filter_by(email='admin@qa.com').first()
@@ -350,8 +363,9 @@ def init_db():
         )
         db.session.add(admin)
         db.session.commit()
-        return 'Database initialized! Admin created (email: admin@qa.com, password: admin123)'
-    return 'Database already initialized!'
+        print('Database initialized! Admin created (email: admin@qa.com, password: admin123)')
+    else:
+        print('Database already initialized!')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
