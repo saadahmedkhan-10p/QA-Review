@@ -4,6 +4,14 @@
 A Flask-based Quality Assurance Review application with role-based access control, admin panel for question management, and monthly project submission tracking. The application allows administrators to configure review questions and manage projects, while users can submit monthly QA reviews for their assigned projects.
 
 ## Recent Changes
+- **2025-10-22**: Enhanced question types with radio buttons and checkboxes
+  - Added options field to Question model for storing multiple choice options
+  - Implemented Radio Buttons question type (single selection)
+  - Implemented Checkboxes question type (multiple selections)
+  - Added dynamic UI to show/hide options field based on question type
+  - Updated submission handling to capture multiple checkbox values
+  - Added client-side validation for required checkbox groups
+  
 - **2025-10-22**: Initial project setup with complete Flask application
   - Created database models for Users, Questions, Projects, Submissions, and Answers
   - Implemented authentication system with Flask-Login
@@ -12,6 +20,7 @@ A Flask-based Quality Assurance Review application with role-based access contro
   - Built submission form system for monthly QA reviews
   - Added responsive Bootstrap UI with gradient design
   - Initialized PostgreSQL database with admin user
+  - Implemented comprehensive security features (CSRF protection, open redirect protection)
 
 ## Project Architecture
 
@@ -25,10 +34,10 @@ A Flask-based Quality Assurance Review application with role-based access contro
 
 ### Database Schema
 - **users**: User accounts with email, password, name, and role
-- **questions**: Review questions with text, type, required flag, and order
+- **questions**: Review questions with text, type, options (for radio/checkbox), required flag, and order
 - **projects**: Projects that can be reviewed
 - **submissions**: User submissions for specific projects and months
-- **answers**: Individual answers linking submissions to questions
+- **answers**: Individual answers linking submissions to questions (checkbox answers stored as comma-separated values)
 
 ### User Roles
 - **Admin**: Full access to manage questions, projects, and view all submissions
@@ -56,6 +65,8 @@ A Flask-based Quality Assurance Review application with role-based access contro
    - Long text (textarea)
    - Number
    - Date
+   - Radio Buttons (single choice from predefined options)
+   - Checkboxes (multiple choice from predefined options)
 
 ### File Structure
 ```
