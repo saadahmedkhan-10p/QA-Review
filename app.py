@@ -38,11 +38,17 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text, nullable=False)
     question_type = db.Column(db.String(20), nullable=False, default='text')
+    options = db.Column(db.Text)
     required = db.Column(db.Boolean, default=True)
     order = db.Column(db.Integer, nullable=False, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     answers = db.relationship('Answer', backref='question', lazy=True, cascade='all, delete-orphan')
+    
+    def get_options_list(self):
+        if self.options:
+            return [opt.strip() for opt in self.options.split('\n') if opt.strip()]
+        return []
 
 class Project(db.Model):
     __tablename__ = 'projects'
@@ -93,8 +99,11 @@ class QuestionForm(FlaskForm):
                                choices=[('text', 'Short Text'), 
                                        ('textarea', 'Long Text'),
                                        ('number', 'Number'),
-                                       ('date', 'Date')],
+                                       ('date', 'Date'),
+                                       ('radio', 'Radio Buttons'),
+                                       ('checkbox', 'Checkboxes (Multiple Choice)')],
                                validators=[DataRequired()])
+    options = TextAreaField('Options (one per line, required for Radio/Checkbox)')
     required = BooleanField('Required', default=True)
     submit = SubmitField('Save Question')
 
@@ -214,6 +223,7 @@ def add_question():
         question = Question(
             text=form.text.data,
             question_type=form.question_type.data,
+            options=form.options.data if form.question_type.data in ['radio', 'checkbox'] else None,
             required=form.required.data,
             order=max_order + 1
         )
@@ -231,6 +241,7 @@ def edit_question(id):
     if form.validate_on_submit():
         question.text = form.text.data
         question.question_type = form.question_type.data
+        question.options = form.options.data if form.question_type.data in ['radio', 'checkbox'] else None
         question.required = form.required.data
         db.session.commit()
         flash('Question updated successfully!', 'success')
