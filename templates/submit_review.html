@@ -20,8 +20,10 @@
                 <form method="POST">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     <div class="mb-4">
-                        <label class="form-label fw-bold">Review Month</label>
-                        <input type="month" name="month" class="form-control" value="{{ current_month }}" required>
+                        <div class="alert alert-info">
+                            <strong>Scheduled For:</strong> {{ submission.scheduled_date.strftime('%Y-%m-%d %H:%M') if submission.scheduled_date else 'No schedule set' }}<br>
+                            <strong>Review Month:</strong> {{ submission.month }}
+                        </div>
                     </div>
                     
                     <hr>

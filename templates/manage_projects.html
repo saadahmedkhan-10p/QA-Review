@@ -24,6 +24,20 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ project.name }}</h5>
                         <p class="card-text text-muted">{{ project.description or 'No description' }}</p>
+                        <p class="card-text">
+                            <strong>Primary Reviewer:</strong> 
+                            {% if project.reviewer %}
+                                <span class="badge bg-success">{{ project.reviewer.name }}</span>
+                            {% else %}
+                                <span class="badge bg-warning">No Reviewer Assigned</span>
+                            {% endif %}<br>
+                            <strong>Secondary Reviewer:</strong> 
+                            {% if project.secondary_reviewer %}
+                                <span class="badge bg-info">{{ project.secondary_reviewer.name }}</span>
+                            {% else %}
+                                <span class="badge bg-warning">No Secondary Reviewer</span>
+                            {% endif %}
+                        </p>
                         <small class="text-muted">Created: {{ project.created_at.strftime('%Y-%m-%d') }}</small>
                     </div>
                     <div class="card-footer bg-white">

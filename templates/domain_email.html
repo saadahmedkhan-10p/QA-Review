@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Domain Email{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-white"><i class="bi bi-envelope-at"></i> Send Email to Domain Users</h1>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">Send Email to Domain Users</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.domain.label(class="form-label fw-bold") }}
+                        {{ form.domain(class="form-control", placeholder="10pearls.com", readonly=true) }}
+                        {% if form.domain.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.domain.errors %}<small>{{ error }}</small>{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            Emails will be sent to all users with @10pearls.com email addresses.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.subject.label(class="form-label fw-bold") }}
+                        {{ form.subject(class="form-control", placeholder="Important Announcement") }}
+                        {% if form.subject.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.subject.errors %}<small>{{ error }}</small>{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.recipient_emails.label(class="form-label fw-bold") }}
+                        {{ form.recipient_emails(class="form-control", rows=3, placeholder="user1@10pearls.com\nuser2@10pearls.com\nuser3@10pearls.com") }}
+                        {% if form.recipient_emails.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.recipient_emails.errors %}<small>{{ error }}</small>{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            <strong>Optional:</strong> Enter specific @10pearls.com email addresses (one per line). Leave empty to send to all @10pearls.com users.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.message.label(class="form-label fw-bold") }}
+                        {{ form.message(class="form-control", rows=8, placeholder="Your message here...") }}
+                        {% if form.message.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.message.errors %}<small>{{ error }}</small>{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            You can use {name} and {email} placeholders to personalize the message for each user.
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>How it works:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>All users with @[domain] email addresses will receive this email</li>
+                            <li>Messages are personalized with each user's name and email</li>
+                            <li>Emails are sent in the background to avoid delays</li>
+                            <li>You'll see a summary of successful and failed sends</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        {{ form.submit(class="btn btn-primary") }}
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Message Tips</h5>
+            </div>
+            <div class="card-body">
+                <h6>Personalization:</h6>
+                <ul class="small">
+                    <li><code>{name}</code> - User's full name</li>
+                    <li><code>{email}</code> - User's email address</li>
+                </ul>
+                
+                <h6 class="mt-3">Example Message:</h6>
+                <div class="bg-light p-2 rounded small">
+                    <code>
+                        Hello {name},<br><br>
+                        This is an important announcement for all @company.com users.<br><br>
+                        Please review the new policies and procedures.<br><br>
+                        Best regards,<br>
+                        Admin Team
+                    </code>
+                </div>
+                
+                <div class="alert alert-warning small mt-3">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>Note:</strong> Make sure email is configured in Email Config before sending.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

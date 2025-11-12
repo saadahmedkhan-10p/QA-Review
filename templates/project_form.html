@@ -30,6 +30,33 @@
                             </div>
                         {% endif %}
                     </div>
+                    <div class="mb-3">
+                        {{ form.reviewer_id.label(class="form-label fw-bold") }}
+                        {{ form.reviewer_id(class="form-select") }}
+                        {% if form.reviewer_id.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.reviewer_id.errors %}<small>{{ error }}</small>{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.secondary_reviewer_id.label(class="form-label fw-bold") }}
+                        {{ form.secondary_reviewer_id(class="form-select") }}
+                        {% if form.secondary_reviewer_id.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.secondary_reviewer_id.errors %}<small>{{ error }}</small>{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                        <div class="mb-3">
+                            {{ form.review_leads.label(class="form-label fw-bold") }}
+                            {{ form.review_leads(class="form-select", multiple=true) }}
+                            {% if form.review_leads.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.review_leads.errors %}<small>{{ error }}</small>{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
                     <div class="d-flex gap-2">
                         {{ form.submit(class="btn btn-primary") }}
                         <a href="{{ url_for('manage_projects') }}" class="btn btn-secondary">Cancel</a>

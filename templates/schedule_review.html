@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Schedule QA Review - {{ project.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="bi bi-calendar-check"></i> Schedule QA Review</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <strong>Project:</strong> {{ project.name }}
+                    {% if project.description %}
+                    <br>
+                    <strong>Description:</strong> {{ project.description }}
+                    {% endif %}
+                </div>
+                
+                <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Schedule Review Date and Time</label>
+                        <input type="datetime-local" 
+                               name="scheduled_date" 
+                               class="form-control"
+                               min="{{ min_date }}"
+                               max="{{ max_date }}"
+                               required>
+                        <div class="form-text">
+                            Please schedule your review for {{ current_month }} between 1st and 10th of the month.
+                            The scheduling window will close after the 10th.
+                        </div>
+                        <div class="alert alert-warning mt-2">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Review must be scheduled and completed within this window. After the 10th,
+                            you'll need to contact the administrator for a new scheduling link.
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-calendar-check"></i> Schedule Review
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

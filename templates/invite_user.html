@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Invite User{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="bi bi-person-plus"></i> Invite New User</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.email.label(class="form-label fw-bold") }}
+                        {{ form.email(class="form-control", placeholder="user@example.com") }}
+                        {% if form.email.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.email.errors %}<small>{{ error }}</small>{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            The invitation will be sent to this email address.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.message.label(class="form-label fw-bold") }}
+                        {{ form.message(class="form-control", rows=4, placeholder="Optional personal message...") }}
+                        {% if form.message.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.message.errors %}<small>{{ error }}</small>{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            Add a personal message to the invitation email (optional).
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>How it works:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>An invitation email will be sent to the specified address</li>
+                            <li>The recipient can click the link in the email to create their account</li>
+                            <li>The invitation will expire in 7 days</li>
+                            <li>Only one pending invitation per email address is allowed</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        {{ form.submit(class="btn btn-primary") }}
+                        <a href="{{ url_for('manage_users') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
